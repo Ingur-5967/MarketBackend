@@ -15,8 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import ru.solomka.jwt.config.ConfigurationImpl;
-import ru.solomka.market.MarketBackendApplication;
 import ru.solomka.market.secure.utils.JwtUtils;
 
 import java.io.IOException;
@@ -78,7 +76,10 @@ public class PerAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         cookie.setPath("/");
         cookie.setMaxAge(86400);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
         response.addCookie(cookie);
+
         try {
             chain.doFilter(request, response);
         } catch (IOException | ServletException e) {

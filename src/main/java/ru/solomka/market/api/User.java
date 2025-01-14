@@ -24,7 +24,7 @@ public class User {
                     userEntity.getUsername(),
                     userEntity.getPassword(),
                     userEntity.getEmail(),
-                    userEntity.getRole(),
+                    userEntity.getPermission().getRole(),
                     userEntity.getBalance()
             );
         }

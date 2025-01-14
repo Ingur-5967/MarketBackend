@@ -2,11 +2,13 @@ package ru.solomka.market.repository.backet;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CollectionType;
 import ru.solomka.market.repository.product.ProductEntity;
 import ru.solomka.market.repository.user.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter @Setter
 @Entity
@@ -21,8 +23,11 @@ public class BasketEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<ProductEntity> products;
+    @ElementCollection(fetch = FetchType.LAZY)
+    @MapKeyJoinColumn(name = "product_id")
+    @CollectionTable(name = "basket_products")
+    @Column(name = "quantity")
+    private Map<ProductEntity, Integer> products;
 
     @OneToOne
     @JoinColumn(name = "owner")

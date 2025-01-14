@@ -7,4 +7,6 @@ public interface UserService {
     UserEntity getUserById(Long userId);
     UserEntity getUserByEmail(String email);
     BasketEntity getBasketById(Long userId);
+
+    UserEntity setUserRole(Long userId, String role);
 }

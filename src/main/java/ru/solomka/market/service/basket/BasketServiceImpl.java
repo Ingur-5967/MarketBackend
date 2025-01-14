@@ -10,6 +10,7 @@ import ru.solomka.market.service.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -28,9 +29,9 @@ public class BasketServiceImpl implements BasketService {
 
         ProductEntity productEntity = productService.getProductByProductId(productId);
 
-        List<ProductEntity> products = basketEntity.getProducts();
-        products.add(productEntity);
-        basketEntity.setProducts(new ArrayList<>(products));
+        Map<ProductEntity, Integer> products = basketEntity.getProducts();
+
+        products.put(productEntity, products.getOrDefault(productEntity, 0) + 1);
 
         if(basketEntity.getUser() == null)
             basketEntity.setUser(userRepository.getUserById(userId));
@@ -45,7 +46,7 @@ public class BasketServiceImpl implements BasketService {
         BasketEntity basketEntity = basketRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("User basket with id '%s' not found".formatted(userId)));
 
-        return basketEntity.getProducts().stream().filter(product -> Objects.equals(product.getProductId(), productId))
+        return basketEntity.getProducts().keySet().stream().filter(product -> Objects.equals(product.getProductId(), productId))
                 .findAny().orElseThrow(() -> new RuntimeException("Product with id '%s' not found".formatted(productId)));
     }
 
@@ -54,7 +55,7 @@ public class BasketServiceImpl implements BasketService {
         BasketEntity basketEntity = basketRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User basket with id '%s' not found".formatted(userId)));
 
-        return basketEntity.getProducts().stream().filter(product -> Objects.equals(productName, product.getName()))
+        return basketEntity.getProducts().keySet().stream().filter(product -> Objects.equals(productName, product.getName()))
                 .findAny().orElseThrow(() -> new RuntimeException("Product with name '%s' not found".formatted(productName)));
     }
 
@@ -63,7 +64,7 @@ public class BasketServiceImpl implements BasketService {
         BasketEntity basketEntity = basketRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User basket with id '%s' not found".formatted(userId)));
 
-        ProductEntity productEntity = basketEntity.getProducts().stream()
+        ProductEntity productEntity = basketEntity.getProducts().keySet().stream()
                 .filter(product -> Objects.equals(product.getProductId(), productId)).findAny()
                 .orElseThrow(() -> new RuntimeException("Product in basket[%s] with id '%s' not found".formatted(userId, productId)));
 
@@ -75,7 +76,7 @@ public class BasketServiceImpl implements BasketService {
     }
 
     @Override
-    public List<ProductEntity> getProductsByUserId(Long userId) {
+    public Map<ProductEntity, Integer> getProductsByUserId(Long userId) {
         BasketEntity basketEntity = basketRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User basket with id '%s' not found".formatted(userId)));
 

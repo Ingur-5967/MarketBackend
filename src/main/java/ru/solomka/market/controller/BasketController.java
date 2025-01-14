@@ -10,6 +10,7 @@ import ru.solomka.market.repository.product.ProductEntity;
 import ru.solomka.market.service.basket.BasketService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,11 +26,17 @@ public class BasketController {
     @GetMapping(GET_BASKET_PRODUCTS_BY_USER_ID)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public List<Product> getBasketProducts(@PathVariable("userId") Long userId) {
-        List<ProductEntity> productEntities = basketService.getProductsByUserId(userId);
-
-        return productEntities.stream()
-                .map(Product.Factory::create)
-                .toList();
+        Map<ProductEntity, Integer> productEntities = basketService.getProductsByUserId(userId);
+        return productEntities.entrySet().stream().map(entry -> {
+            ProductEntity productEntity = entry.getKey();
+            Integer quantity = entry.getValue();
+            return new Product(
+                    productEntity.getName(),
+                    productEntity.getDescription(),
+                    productEntity.getPrice(),
+                    quantity
+            );
+        }).toList();
     }
 
     @PostMapping(ADD_BASKET_PRODUCT_BY_PRODUCT_ID)

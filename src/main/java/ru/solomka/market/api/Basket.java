@@ -18,8 +18,8 @@ public class Basket {
             return new Basket(
                     basketEntity.getUserId(),
                     basketEntity.getProducts()
-                            .stream()
-                            .map(obj -> new Product(obj.getName(), obj.getDescription(), obj.getPrice()))
+                            .keySet().stream()
+                            .map(obj -> new Product(obj.getName(), obj.getDescription(), obj.getPrice(), obj.getQuantity()))
                             .toList()
             );
         }

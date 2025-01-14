@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import ru.solomka.market.repository.backet.BasketEntity;
+import ru.solomka.market.secure.user.enums.UserPermission;
 
 @Table(catalog = "enterprice", name = "users")
 @Entity
@@ -34,12 +35,13 @@ public class UserEntity {
     @NotBlank
     private String email;
 
-    @NotBlank
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserPermission permission;
 
     @PositiveOrZero
     private Double balance;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "basket_id")
     private BasketEntity basket;
 }

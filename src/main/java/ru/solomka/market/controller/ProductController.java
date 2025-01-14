@@ -35,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping(CREATE_PRODUCT)
-    @PreAuthorize("hasAnyAuthority('ROLE_SELLER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public Product createProduct(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
         if(productCreateRequest.getName().isEmpty() || productCreateRequest.getDescription().isEmpty())
             throw new IllegalArgumentException("Product name or description cannot be empty");
@@ -47,6 +47,7 @@ public class ProductController {
                 .name(productCreateRequest.getName())
                 .description(productCreateRequest.getDescription())
                 .price(productCreateRequest.getPrice())
+                .quantity(1)
                 .build();
 
         productRepository.saveAndFlush(entity);

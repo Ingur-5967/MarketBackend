@@ -3,6 +3,7 @@ package ru.solomka.market.controller.usecase.api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import ru.solomka.market.repository.backet.BasketEntity;
 import ru.solomka.market.repository.user.UserEntity;
 import ru.solomka.market.repository.user.UserRepository;
 import ru.solomka.market.secure.user.UserDetailsImpl;
+import ru.solomka.market.secure.user.enums.UserPermission;
 
 
 @RestController
@@ -29,6 +31,7 @@ public class AuthorizeController {
     private final PasswordEncoder encoder;
 
     @PostMapping(value = "/signin")
+    @PreAuthorize("!isAuthenticated()")
     public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -44,6 +47,7 @@ public class AuthorizeController {
     }
 
     @PostMapping("/signup")
+    @PreAuthorize("!isAuthenticated()")
     public ResponseEntity<?> registerUser(@Valid RegistrationRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
@@ -62,7 +66,7 @@ public class AuthorizeController {
                 .password(encoder.encode(signUpRequest.getPassword()))
                 .email(signUpRequest.getEmail())
                 .balance(0.0)
-                .role("ROLE_USER")
+                .permission(UserPermission.USER)
                 .basket(BasketEntity.builder().build())
                 .build();
 

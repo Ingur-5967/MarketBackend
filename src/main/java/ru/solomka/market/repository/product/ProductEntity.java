@@ -2,12 +2,12 @@ package ru.solomka.market.repository.product;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.solomka.market.repository.backet.BasketEntity;
 
 @Table(catalog = "enterprice", name = "products")
 @Entity
@@ -29,4 +29,7 @@ public class ProductEntity {
 
     @PositiveOrZero
     private Integer price;
+
+    @Positive
+    private Integer quantity;
 }

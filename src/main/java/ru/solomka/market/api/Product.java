@@ -9,11 +9,11 @@ import ru.solomka.market.repository.product.ProductEntity;
 public class Product {
 
     private final String name, description;
-    private final int price;
+    private final int price, quantity;
 
     public static class Factory {
         public static Product create(ProductEntity productEntity) {
-            return new Product(productEntity.getName(), productEntity.getDescription(), productEntity.getPrice());
+            return new Product(productEntity.getName(), productEntity.getDescription(), productEntity.getPrice(), productEntity.getQuantity());
         }
     }
 }

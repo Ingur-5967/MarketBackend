@@ -3,6 +3,7 @@ package ru.solomka.market.service.basket;
 import ru.solomka.market.repository.product.ProductEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BasketService {
     ProductEntity addProductToBasket(Long userId, Long productId);
@@ -10,7 +11,5 @@ public interface BasketService {
     ProductEntity getProductByProductName(Long userId, String productName);
     boolean deleteProductByProductId(Long userId, Long productId);
 
-    List<ProductEntity> getProductsByUserId(Long userId);
-
-
+    Map<ProductEntity, Integer> getProductsByUserId(Long userId);
 }
