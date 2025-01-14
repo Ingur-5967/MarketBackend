@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.solomka.market.api.Product;
 import ru.solomka.market.api.request.ProductCreateRequest;
 import ru.solomka.market.repository.product.ProductEntity;
-import ru.solomka.market.repository.product.ProductRepository;
 import ru.solomka.market.service.product.ProductService;
 
 @RestController
@@ -16,42 +15,31 @@ import ru.solomka.market.service.product.ProductService;
 public class ProductController {
 
     private static final String CREATE_PRODUCT = "/products/new";
-    private static final String GET_PRODUCT_BY_NAME = "/products";
-    private static final String GET_PRODUCT_BY_ID = "/products/{id}";
+    private static final String GET_PRODUCT_BY_OPTION = "/products";
 
     private final ProductService productService;
-    private final ProductRepository productRepository;
 
-    @GetMapping(GET_PRODUCT_BY_NAME)
+    @GetMapping(GET_PRODUCT_BY_OPTION)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    public Product getProductByParamName(@RequestParam("productName") String productName) {
+    public Product getProductByParamName(@RequestParam("option") String productName) {
         return Product.Factory.create(productService.getProductByProductName(productName));
     }
 
-    @GetMapping(GET_PRODUCT_BY_ID)
+    @GetMapping(GET_PRODUCT_BY_OPTION)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    public Product getProductByParamName(@PathVariable("id") Long productId) {
+    public Product getProductByParamName(@RequestParam("option") Long productId) {
         return Product.Factory.create(productService.getProductByProductId(productId));
     }
 
     @PostMapping(CREATE_PRODUCT)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public Product createProduct(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
-        if(productCreateRequest.getName().isEmpty() || productCreateRequest.getDescription().isEmpty())
-            throw new IllegalArgumentException("Product name or description cannot be empty");
+        ProductEntity productEntity = productService.createProduct(
+                productCreateRequest.getName(),
+                productCreateRequest.getDescription(),
+                productCreateRequest.getPrice()
+        );
 
-        if(productCreateRequest.getPrice() < 0)
-            throw new IllegalArgumentException("Product price cannot be negative");
-
-        ProductEntity entity = ProductEntity.builder()
-                .name(productCreateRequest.getName())
-                .description(productCreateRequest.getDescription())
-                .price(productCreateRequest.getPrice())
-                .quantity(1)
-                .build();
-
-        productRepository.saveAndFlush(entity);
-
-        return Product.Factory.create(entity);
+        return Product.Factory.create(productEntity);
     }
 }

@@ -2,11 +2,11 @@ package ru.solomka.market.secure.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
+import org.apache.tomcat.util.json.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import ru.solomka.market.secure.utils.JwtUtils;
 
 import java.io.IOException;
@@ -40,13 +41,24 @@ public class PerAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @SneakyThrows
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws AuthenticationException {
+
+        ContentCachingRequestWrapper request = new ContentCachingRequestWrapper(servletRequest);
+
+
+        Map<String, Object> mappedParameters;
+        try {
+            mappedParameters = new JSONParser(String.join(" ", request.getReader().lines().toList())).object();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+
 
         String username = null;
         String password = null;
         try {
-            username = request.getParameter("username");
-            password = request.getParameter("password");
+            username = String.valueOf(mappedParameters.get("username"));
+            password = String.valueOf(mappedParameters.get("password"));
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 
@@ -57,11 +69,11 @@ public class PerAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             throw e;
         }
         catch (Exception e) {
-            response.setStatus(INTERNAL_SERVER_ERROR.value());
+            servletResponse.setStatus(INTERNAL_SERVER_ERROR.value());
             Map<String, String> error = new HashMap<>();
             error.put("errorMessage", e.getMessage());
-            response.setContentType(APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(), error);
+            servletResponse.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(servletResponse.getOutputStream(), error);
             throw new RuntimeException(String.format("Error in attemptAuthentication with username %s and password %s", username, password), e);
         }
     }
@@ -80,11 +92,6 @@ public class PerAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         cookie.setSecure(true);
         response.addCookie(cookie);
 
-        try {
-            chain.doFilter(request, response);
-        } catch (IOException | ServletException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

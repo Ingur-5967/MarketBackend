@@ -9,4 +9,6 @@ public interface UserService {
     BasketEntity getBasketById(Long userId);
 
     UserEntity setUserRole(Long userId, String role);
+
+    UserEntity editUser(Long userId, String username, String email);
 }

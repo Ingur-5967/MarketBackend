@@ -18,7 +18,7 @@ public class SecureFilters {
     public FilterRegistrationBean<?> loginRegistrationBean() {
         FilterRegistrationBean<PerAuthenticationFilter> filterRegistrationBean = new FilterRegistrationBean<>();
         filterRegistrationBean.setFilter(new PerAuthenticationFilter(authenticationManager));
-        filterRegistrationBean.setUrlPatterns(List.of("/api/auth/**", "/secure/**"));
+        filterRegistrationBean.setUrlPatterns(List.of("/api/v1/auth/**"));
         return filterRegistrationBean;
     }
 

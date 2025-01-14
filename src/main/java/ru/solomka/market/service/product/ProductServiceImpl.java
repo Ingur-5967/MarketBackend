@@ -2,6 +2,7 @@ package ru.solomka.market.service.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.solomka.market.api.Product;
 import ru.solomka.market.repository.product.ProductEntity;
 import ru.solomka.market.repository.product.ProductRepository;
 
@@ -23,5 +24,17 @@ public class ProductServiceImpl implements ProductService {
     public ProductEntity getProductByProductName(String productName) {
         Optional<ProductEntity> productEntity = productRepository.findByName(productName);
         return productEntity.orElseThrow(() -> new RuntimeException("Product with name '%s' not found".formatted(productName)));
+    }
+
+    @Override
+    public ProductEntity createProduct(String productName, String productDescription, Integer price) {
+        ProductEntity entity = ProductEntity.builder()
+                .name(productName)
+                .description(productDescription)
+                .price(price)
+                .quantity(1)
+                .build();
+
+        return productRepository.saveAndFlush(entity);
     }
 }

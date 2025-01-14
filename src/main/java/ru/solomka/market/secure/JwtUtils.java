@@ -38,7 +38,6 @@ public class JwtUtils {
                 .orElseThrow(() -> new RuntimeException("Invalid token format"));
     }
 
-
     public static boolean validateJwtToken(String token) {
         try {
             return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(getJwtSecret().getBytes()))

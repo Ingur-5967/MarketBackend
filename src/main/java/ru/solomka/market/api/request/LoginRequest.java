@@ -1,14 +1,15 @@
 package ru.solomka.market.api.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class LoginRequest {
-    private String username;
+    @NotBlank
+    private final String username;
 
-    @JsonIgnore
-    private String password;
+    @NotBlank
+    private final String password;
 }

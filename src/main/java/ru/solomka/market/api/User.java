@@ -10,11 +10,10 @@ import ru.solomka.market.repository.user.UserEntity;
 public class User {
 
     private final String username;
-
     @JsonIgnore
     private final String password;
-
     private final String email;
+    @JsonIgnore
     private final String role;
     private final double balance;
 

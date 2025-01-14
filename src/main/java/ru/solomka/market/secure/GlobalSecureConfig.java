@@ -83,10 +83,9 @@ public class GlobalSecureConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/v1/**").permitAll().anyRequest().authenticated()
+                        auth.requestMatchers("/**").permitAll().anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider());
-
 
         http.addFilterAfter(authorizeTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(new PerAuthenticationFilter(manager), UsernamePasswordAuthenticationFilter.class);

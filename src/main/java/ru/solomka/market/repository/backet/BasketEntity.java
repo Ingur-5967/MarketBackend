@@ -17,7 +17,6 @@ import java.util.Map;
 @Builder
 @Table(catalog = "enterprice", name="basket")
 public class BasketEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")

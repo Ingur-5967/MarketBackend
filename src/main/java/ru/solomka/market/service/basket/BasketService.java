@@ -2,7 +2,6 @@ package ru.solomka.market.service.basket;
 
 import ru.solomka.market.repository.product.ProductEntity;
 
-import java.util.List;
 import java.util.Map;
 
 public interface BasketService {
