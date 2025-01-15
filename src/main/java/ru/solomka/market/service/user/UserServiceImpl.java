@@ -1,7 +1,6 @@
 package ru.solomka.market.service.user;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.stereotype.Service;
 import ru.solomka.market.repository.backet.BasketEntity;
 import ru.solomka.market.repository.user.UserEntity;

@@ -1,4 +1,4 @@
-package ru.solomka.market.controller;
+package ru.solomka.market.controller.rest.v1;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.solomka.market.api.Product;
 import ru.solomka.market.api.request.ProductCreateRequest;
+import ru.solomka.market.mapper.SchemaMapping;
 import ru.solomka.market.repository.product.ProductEntity;
 import ru.solomka.market.service.product.ProductService;
 
@@ -15,20 +16,24 @@ import ru.solomka.market.service.product.ProductService;
 public class ProductController {
 
     private static final String CREATE_PRODUCT = "/products/new";
-    private static final String GET_PRODUCT_BY_OPTION = "/products";
+    private static final String GET_PRODUCT_BY_ID = "/products/find/{productId}";
+    private static final String GET_PRODUCT_BY_NAME = "/products/find";
 
     private final ProductService productService;
+    private final SchemaMapping<ProductEntity, Product> productMapping;
 
-    @GetMapping(GET_PRODUCT_BY_OPTION)
+    @GetMapping(GET_PRODUCT_BY_NAME)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    public Product getProductByParamName(@RequestParam("option") String productName) {
-        return Product.Factory.create(productService.getProductByProductName(productName));
+    public Product getProductByParamName(@RequestParam("productName") String productName) {
+        ProductEntity productEntityByName = productService.getProductByProductName(productName);
+        return productMapping.map(productEntityByName);
     }
 
-    @GetMapping(GET_PRODUCT_BY_OPTION)
+    @GetMapping(GET_PRODUCT_BY_ID)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    public Product getProductByParamName(@RequestParam("option") Long productId) {
-        return Product.Factory.create(productService.getProductByProductId(productId));
+    public Product getProductByParamId(@PathVariable("productId") Long productId) {
+        ProductEntity productEntityById = productService.getProductByProductId(productId);
+        return productMapping.map(productEntityById);
     }
 
     @PostMapping(CREATE_PRODUCT)
@@ -40,6 +45,6 @@ public class ProductController {
                 productCreateRequest.getPrice()
         );
 
-        return Product.Factory.create(productEntity);
+        return productMapping.map(productEntity);
     }
 }

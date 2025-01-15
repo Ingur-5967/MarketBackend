@@ -1,12 +1,13 @@
-package ru.solomka.market.controller;
+package ru.solomka.market.controller.rest.v1;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.solomka.market.api.User;
 import ru.solomka.market.api.request.EditBioRequest;
+import ru.solomka.market.mapper.SchemaMapping;
 import ru.solomka.market.repository.user.UserEntity;
 import ru.solomka.market.service.user.UserService;
 
@@ -19,27 +20,28 @@ public class UserController {
     private static final String EDIT_ROLE_USER = "/api/v1/users/{userId}/role/edit";
 
     private final UserService userService;
+    private final SchemaMapping<UserEntity, User> userMapping;
 
     @GetMapping(GET_USER)
     @PostAuthorize("isAuthenticated()")
     public User getUserById(@PathVariable("userId") Long userId) {
         UserEntity userEntity = userService.getUserById(userId);
-        return User.Factory.create(userEntity);
+        return userMapping.map(userEntity);
     }
 
     @PostMapping(EDIT_ROLE_USER)
     @PostAuthorize("isAuthenticated() && hasAuthority('ROLE_MANAGER')")
     public User setUserRole(@PathVariable("userId") Long userId, @RequestBody String role) {
         UserEntity userEntity = userService.setUserRole(userId, role.toUpperCase());
-        return User.Factory.create(userEntity);
+        return userMapping.map(userEntity);
     }
 
     @PostMapping(EDIT_CONTACT_USER)
     @PreAuthorize("isAuthenticated()")
     public User editUserContact(@PathVariable("userId") Long userId,
-                                @RequestBody EditBioRequest editBioRequest) {
+                                @Valid @RequestBody EditBioRequest editBioRequest) {
 
         UserEntity userEntity = userService.editUser(userId, editBioRequest.getUsername(), editBioRequest.getEmail());
-        return User.Factory.create(userEntity);
+        return userMapping.map(userEntity);
     }
 }

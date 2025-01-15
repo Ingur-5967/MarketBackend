@@ -1,4 +1,4 @@
-package ru.solomka.market.controller;
+package ru.solomka.market.controller.rest.v1;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.solomka.market.api.User;
 import ru.solomka.market.api.request.LoginRequest;
 import ru.solomka.market.api.request.RegistrationRequest;
+import ru.solomka.market.mapper.SchemaMapping;
 import ru.solomka.market.repository.user.UserEntity;
 import ru.solomka.market.service.authorization.AuthorizationService;
 
@@ -16,6 +17,7 @@ import ru.solomka.market.service.authorization.AuthorizationService;
 public class AuthorizeController {
 
     private final AuthorizationService authorizationService;
+    private final SchemaMapping<UserEntity, User> userMapping;
 
     @PostMapping("/signin")
     @PreAuthorize("!isAuthenticated()")
@@ -29,6 +31,6 @@ public class AuthorizeController {
         UserEntity registeredUser = authorizationService
                 .registration(signUpRequest.getUsername(), signUpRequest.getPassword(), signUpRequest.getEmail());
 
-        return User.Factory.create(registeredUser);
+        return userMapping.map(registeredUser);
     }
 }

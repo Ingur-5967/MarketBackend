@@ -1,4 +1,4 @@
-package ru.solomka.market.controller;
+package ru.solomka.market.controller.rest.v1;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.solomka.market.api.Product;
 import ru.solomka.market.api.response.ApiObjectResponse;
+import ru.solomka.market.mapper.SchemaMapping;
 import ru.solomka.market.repository.product.ProductEntity;
 import ru.solomka.market.service.basket.BasketService;
 
@@ -22,6 +23,7 @@ public class BasketController {
     private static final String DELETE_BASKET_PRODUCT_BY_PRODUCT_ID = "/{userId}/product/{productId}";
 
     private final BasketService basketService;
+    private final SchemaMapping<ProductEntity, Product> productMapping;
 
     @GetMapping(GET_BASKET_PRODUCTS_BY_USER_ID)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
@@ -42,7 +44,8 @@ public class BasketController {
     @PostMapping(ADD_BASKET_PRODUCT_BY_PRODUCT_ID)
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     public Product getBasketProducts(@PathVariable("userId") Long userId, @RequestParam("productId") Long productId) {
-        return Product.Factory.create(basketService.addProductToBasket(userId, productId));
+        ProductEntity addedProductEntity = basketService.addProductToBasket(userId, productId);
+        return productMapping.map(addedProductEntity);
     }
 
     @DeleteMapping(DELETE_BASKET_PRODUCT_BY_PRODUCT_ID)
