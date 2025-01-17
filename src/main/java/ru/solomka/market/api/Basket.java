@@ -10,8 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Basket {
-
     private final Long ownerId;
     private final List<Product> products;
-
 }

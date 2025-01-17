@@ -11,8 +11,8 @@ import ru.solomka.market.repository.user.UserEntity;
 import java.util.Collection;
 import java.util.Collections;
 
-@RequiredArgsConstructor
 @Data
+@RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     private final String username;
@@ -25,16 +25,6 @@ public class UserDetailsImpl implements UserDetails {
     private final String role;
 
     private final double balance;
-
-    public static UserDetailsImpl fromUserEntity(UserEntity userEntity) {
-        return new UserDetailsImpl(
-                userEntity.getUsername(),
-                userEntity.getPassword(),
-                userEntity.getEmail(),
-                userEntity.getRole().getRoleName(),
-                userEntity.getBalance()
-        );
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
