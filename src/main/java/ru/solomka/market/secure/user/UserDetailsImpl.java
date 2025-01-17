@@ -31,7 +31,7 @@ public class UserDetailsImpl implements UserDetails {
                 userEntity.getUsername(),
                 userEntity.getPassword(),
                 userEntity.getEmail(),
-                userEntity.getPermission().getRole(),
+                userEntity.getRole().getRoleName(),
                 userEntity.getBalance()
         );
     }

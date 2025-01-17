@@ -35,11 +35,11 @@ public class UserEntity {
     @NotBlank
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private UserPermission permission;
-
     @PositiveOrZero
     private Double balance;
+
+    @Enumerated(EnumType.STRING)
+    private UserPermission role;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "basket_id")

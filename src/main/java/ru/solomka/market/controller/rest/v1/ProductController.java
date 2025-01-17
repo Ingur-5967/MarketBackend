@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.solomka.market.api.Product;
-import ru.solomka.market.api.request.ProductCreateRequest;
+import ru.solomka.market.api.request.product.ProductCreateRequest;
 import ru.solomka.market.mapper.SchemaMapping;
 import ru.solomka.market.repository.product.ProductEntity;
 import ru.solomka.market.service.product.ProductService;

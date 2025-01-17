@@ -1,4 +1,4 @@
-package ru.solomka.market.api.request;
+package ru.solomka.market.api.request.product;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

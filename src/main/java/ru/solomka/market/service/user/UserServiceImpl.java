@@ -2,7 +2,6 @@ package ru.solomka.market.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.solomka.market.repository.backet.BasketEntity;
 import ru.solomka.market.repository.user.UserEntity;
 import ru.solomka.market.repository.user.UserRepository;
 import ru.solomka.market.secure.user.enums.UserPermission;
@@ -16,7 +15,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserEntity getUserById(Long userId) {
+    public UserEntity getUserByUserId(Long userId) {
         return userRepository.findById(userId).filter(user -> Objects.equals(user.getUserId(), userId))
                 .orElseThrow(() -> new RuntimeException("User with id '%s' not found or is it not you".formatted(userId)));
     }
@@ -25,14 +24,6 @@ public class UserServiceImpl implements UserService {
     public UserEntity getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User with email '%s' not found".formatted(email)));
-    }
-
-    @Override
-    public BasketEntity getBasketById(Long userId) {
-        UserEntity userEntity = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User with id '%s' not found".formatted(userId)));
-
-        return userEntity.getBasket();
     }
 
     @Override
@@ -47,12 +38,12 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Invalid user permission: " + role);
         }
 
-        userEntity.setPermission(userPermission);
+        userEntity.setRole(userPermission);
         return userRepository.saveAndFlush(userEntity);
     }
 
     @Override
-    public UserEntity editUser(Long userId, String username, String email) {
+    public UserEntity editUserBio(Long userId, String username, String email) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User with id '%s' not found".formatted(userId)));
 

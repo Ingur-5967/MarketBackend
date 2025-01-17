@@ -1,4 +1,4 @@
-package ru.solomka.market.api.request;
+package ru.solomka.market.api.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

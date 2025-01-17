@@ -29,12 +29,17 @@ public class BasketServiceImpl implements BasketService {
 
         ProductEntity productEntity = productService.getProductByProductId(productId);
 
+        if(productEntity.getQuantity() <= 0)
+            throw new RuntimeException("Product with id '%s' is empty".formatted(productId));
+
         Map<ProductEntity, Integer> products = basketEntity.getProducts();
 
         products.put(productEntity, products.getOrDefault(productEntity, 0) + 1);
 
+        productEntity.setQuantity(productEntity.getQuantity() - 1);
+
         if(basketEntity.getUser() == null)
-            basketEntity.setUser(userRepository.getUserById(userId));
+            basketEntity.setUser(userRepository.getUserByUserId(userId));
 
         basketRepository.saveAndFlush(basketEntity);
 

@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.solomka.market.api.User;
-import ru.solomka.market.api.request.EditBioRequest;
+import ru.solomka.market.api.request.user.EditBioRequest;
 import ru.solomka.market.mapper.SchemaMapping;
 import ru.solomka.market.repository.user.UserEntity;
 import ru.solomka.market.service.user.UserService;
@@ -25,7 +25,7 @@ public class UserController {
     @GetMapping(GET_USER)
     @PostAuthorize("isAuthenticated()")
     public User getUserById(@PathVariable("userId") Long userId) {
-        UserEntity userEntity = userService.getUserById(userId);
+        UserEntity userEntity = userService.getUserByUserId(userId);
         return userMapping.map(userEntity);
     }
 
@@ -41,7 +41,7 @@ public class UserController {
     public User editUserContact(@PathVariable("userId") Long userId,
                                 @Valid @RequestBody EditBioRequest editBioRequest) {
 
-        UserEntity userEntity = userService.editUser(userId, editBioRequest.getUsername(), editBioRequest.getEmail());
+        UserEntity userEntity = userService.editUserBio(userId, editBioRequest.getUsername(), editBioRequest.getEmail());
         return userMapping.map(userEntity);
     }
 }

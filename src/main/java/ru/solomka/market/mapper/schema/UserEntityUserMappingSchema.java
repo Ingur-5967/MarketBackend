@@ -14,7 +14,7 @@ public class UserEntityUserMappingSchema implements SchemaMapping<UserEntity, Us
                 .username(from.getUsername())
                 .password(from.getPassword())
                 .email(from.getEmail())
-                .role(from.getPermission().getRole())
+                .role(from.getRole().getRoleName())
                 .balance(from.getBalance())
                 .build();
     }

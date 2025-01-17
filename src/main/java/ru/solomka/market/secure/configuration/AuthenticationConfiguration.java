@@ -10,7 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.solomka.market.secure.AuthenticationEntryPointJWT;
 import ru.solomka.market.secure.filter.AuthorizeTokenFilter;
-import ru.solomka.market.secure.filter.PerAuthenticationFilter;
 
 @Configuration
 public class AuthenticationConfiguration {
